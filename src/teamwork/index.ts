@@ -1,5 +1,3 @@
-import { Console } from "console";
-
 interface Skill {
   name: string,
   level: number,
@@ -12,20 +10,17 @@ interface Project {
 
 interface Contributor {
   name: string,
-  available: boolean,
   skills: Skill[],
 }
 
 const contributors: Contributor[] = [
   {
     name: 'Anna',
-    available: true,
     skills: [{ name: 'c++', level: 1 }],
   },
   
   {
     name: 'Bob',
-    available: true,
     skills: [
       { name: 'html', level: 5 },
       { name: 'css', level: 5 },
@@ -34,7 +29,6 @@ const contributors: Contributor[] = [
   
   {
     name: 'Maria',
-    available: true,
     skills: [{ name: 'python', level: 3 }]
   },
 ];
@@ -77,7 +71,6 @@ function findContributors(
 
   const contributors = requiredSkills.map((skill) => {
     const bestContributors = availableContributors
-      .filter(contributor => contributor.available)
       .filter(contributor => contributor.skills.findIndex((s) => s.name === skill.name) !== -1)
       .filter(contributor => {
         const selectedSkill = contributor.skills.find((s) => s.name === skill.name);
@@ -99,7 +92,3 @@ function findContributors(
 
   return contributors.filter(Boolean).length === requiredSkills.length ? contributors : null;
 }
-
-
-//sortProjects(projects);
-console.log(findContributors(projects[0], contributors));
