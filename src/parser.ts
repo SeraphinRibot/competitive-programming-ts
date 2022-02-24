@@ -5,7 +5,7 @@ import { SkillRecord, SkillTupple } from "./entities/skill";
 
 export const parseFile = () => {
   const file = fs.readFileSync(
-    "./data/qualification_round_2022/c_collaboration.in.txt",
+    "../data/b_better_start_small.in.txt",
     { encoding: "utf-8" }
   );
 

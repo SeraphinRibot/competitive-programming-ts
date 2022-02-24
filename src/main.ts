@@ -1,13 +1,15 @@
 import { Contributor } from "./entities/contributor";
 import { Project } from "./entities/project";
 import { SkillPlusContributor, SkillTupple } from "./entities/skill";
+import { parseFile } from "./parser";
 import { sortProjects, findContributors } from "./teamwork";
+import * as fs from 'fs';
 
 const getAvailableContributors = (contributors: Contributor[]) => {
   return contributors.filter((c) => !c.currentWork);
 };
 
-const finishedProject: string[] = [];
+const finishedProject: Project[] = [];
 
 export const consumeProjects = (
   projects: Project[],
@@ -29,6 +31,7 @@ export const consumeProjects = (
         projectContributors.forEach((c) => {
           c.contributor.setProject(project.name, c.skill[0]); // Contributors on a project TODO: add skill
         });
+        project.start(days, projectContributors.map(({ contributor }) => contributor.name));
 
         inProgressProjects.push(project); // Add project to in progress projects
         leftProjects = leftProjects.filter((p) => project.name !== p.name); // Remove project from left projects
@@ -51,11 +54,30 @@ export const consumeProjects = (
           (p) => project.name !== p.name
         );
 
-        finishedProject.push(project.name); // Add project to finished projects
-        finishedProject.push(contributorsFinished.map((c) => c.name).join(" "));
+        project.finish(days);
+        finishedProject.push(project); // Add project to finished projects
+        //finishedProject.push(contributorsFinished.map((c) => c.name).join(" "));
       }
     });
 
     days++; // Advance day
+    const outputJSON = finishedProject.reduce((acc, cur) => {
+      const name = cur.name as string;
+      acc[name] = {
+        "start_date": cur.start_date,
+        "end_date": cur.end_date,
+        "best_before": cur.bestBefore,
+        "days": cur.duration,
+        "score": cur.score,
+      }
+      return acc;
+    }, {} as any);
+    fs.writeFileSync('./output.json', JSON.stringify(outputJSON));
+    const a = `${finishedProject.length}\n` + finishedProject.flatMap(project => [project.name, project.contributors?.join(' ')].join('\n')).join('\n')
+    fs.writeFileSync('./output.txt', a.toString());
   }
 };
+
+
+const database = parseFile();
+consumeProjects(database.projects, database.contributors);

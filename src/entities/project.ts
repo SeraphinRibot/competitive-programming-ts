@@ -9,6 +9,10 @@ export class Project {
   bestBefore: number;
   skills: SkillTupple[]; // tupple instead of record because we can have multiple times smae role
 
+  start_date?: number;
+  end_date?: number;
+  contributors?: string[];
+
   constructor(
     name: string,
     duration: number,
@@ -30,5 +34,14 @@ export class Project {
 
   isFinished() {
     return this.daysLeft >= 0;
+  }
+
+  start(date: number, contributors: string[]) {
+    this.start_date = date;
+    this.contributors = contributors;
+  }
+
+  finish(date: number) {
+    this.end_date = date;
   }
 }
