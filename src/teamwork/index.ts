@@ -1,63 +1,66 @@
-interface Skill {
-  name: string,
-  level: number,
-}
+// interface Skill {
+//   name: string,
+//   level: number,
+// }
 
-interface Project {
-  name: string
-  skills: Skill[]
-}
+import { Contributor } from "../entities/contributor";
+import { Project } from "../entities/project";
 
-interface Contributor {
-  name: string,
-  skills: Skill[],
-}
+// interface Project {
+//   name: string
+//   skills: Skill[]
+// }
 
-const contributors: Contributor[] = [
-  {
-    name: 'Anna',
-    skills: [{ name: 'c++', level: 1 }],
-  },
+// interface Contributor {
+//   name: string,
+//   skills: Skill[],
+// }
+
+// const contributors: Contributor[] = [
+//   {
+//     name: 'Anna',
+//     skills: [{ name: 'c++', level: 1 }],
+//   },
   
-  {
-    name: 'Bob',
-    skills: [
-      { name: 'html', level: 5 },
-      { name: 'css', level: 5 },
-    ],
-  },
+//   {
+//     name: 'Bob',
+//     skills: [
+//       { name: 'html', level: 5 },
+//       { name: 'css', level: 5 },
+//     ],
+//   },
   
-  {
-    name: 'Maria',
-    skills: [{ name: 'python', level: 3 }]
-  },
-];
+//   {
+//     name: 'Maria',
+//     skills: [{ name: 'python', level: 3 }]
+//   },
+// ];
 
-const projects: Project[] = [
-  {
-    name: 'WebChat',
-    skills: [
-      { name: 'html', level: 3 },
-      { name: 'python', level: 3 },
-    ]
-  },
-  {
-    name: 'Logging',
-    skills: [{ name: 'c++', level: 3 }]
-  },
-  {
-    name: 'WebServer',
-    skills: [
-      { name: 'c++', level: 2 },
-      { name: 'html', level: 3 },
-    ]
-  },  
-]
+// const projects: Project[] = [
+//   {
+//     name: 'WebChat',
+//     skills: [
+//       { name: 'html', level: 3 },
+//       { name: 'python', level: 3 },
+//     ]
+//   },
+//   {
+//     name: 'Logging',
+//     skills: [{ name: 'c++', level: 3 }]
+//   },
+//   {
+//     name: 'WebServer',
+//     skills: [
+//       { name: 'c++', level: 2 },
+//       { name: 'html', level: 3 },
+//     ]
+//   },  
+// ]
 // Sort projects by skill level
-function sortProjects(projects: Project[]) {
+export function sortProjects(projects: Project[]) {
   return projects.sort((prevProject, nextProject) => {
-    const prevProjectLevel = prevProject.skills.reduce((total, skill) => total + skill.level, 0);
-    const nextProjectLevel = nextProject.skills.reduce((total, skill) => total + skill.level, 0);
+    const prevProjectLevel = prevProject.skills.reduce((total, skill) => total + skill[1], 0);
+    const nextProjectLevel = nextProject.skills.reduce((total, skill) => total + skill[1], 0);
     return prevProjectLevel - nextProjectLevel;
   });
 }
@@ -71,17 +74,17 @@ function findContributors(
 
   const contributors = requiredSkills.map((skill) => {
     const bestContributors = availableContributors
-      .filter(contributor => contributor.skills.findIndex((s) => s.name === skill.name) !== -1)
+      .filter(contributor => contributor.skills[skill[0]])
       .filter(contributor => {
-        const selectedSkill = contributor.skills.find((s) => s.name === skill.name);
-        if (selectedSkill) {
-          return selectedSkill.level >= skill.level;
+        const level = contributor.skills[skill[0]];
+        if (level) {
+          return level >= skill[1];
         }
         return false;
       })
       .sort((prevContributors, nextContributors) => {
-        const prevContributorsLevel = prevContributors.skills.find((s) => s.name === skill.name)?.level || 0;
-        const nextContributorsLevel = nextContributors.skills.find((s) => s.name === skill.name)?.level || 0;
+        const prevContributorsLevel = prevContributors.skills[skill[0]] || 0;
+        const nextContributorsLevel = nextContributors.skills[skill[0]] || 0;
         return prevContributorsLevel - nextContributorsLevel;
       });
 
