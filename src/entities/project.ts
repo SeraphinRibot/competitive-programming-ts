@@ -1,6 +1,4 @@
-import { Skill } from "./contributor";
-
-export type Roles = Record<string, Skill>;
+import { SkillTupple } from "./skill";
 
 export class Project {
   name: string;
@@ -8,14 +6,14 @@ export class Project {
   daysLeft: number; // Days before end of project
   score: number;
   bestBefore: number;
-  skills: [string, number][]; // tupple instead of record because we can have multiple times smae role
+  skills: SkillTupple[]; // tupple instead of record because we can have multiple times smae role
 
   constructor(
     name: string,
     duration: number,
     score: number,
     bestBefore: number,
-    skills: [string, number][]
+    skills: SkillTupple[]
   ) {
     this.name = name;
     this.duration = duration;
