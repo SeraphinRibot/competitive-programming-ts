@@ -1,6 +1,7 @@
 import fs from "fs";
-import { Contributor, Skill } from "./entities/contributor";
-import { Project, Roles } from "./entities/project";
+import { Contributor } from "./entities/contributor";
+import { Project } from "./entities/project";
+import { SkillRecord, SkillTupple } from "./entities/skill";
 
 export const parseFile = () => {
   const file = fs.readFileSync(
@@ -22,7 +23,7 @@ export const parseFile = () => {
 
     var leftSkill = Number(skillsCount);
 
-    const skills: Skill = {};
+    const skills: SkillRecord = {};
 
     while (leftSkill > 0) {
       const [skillLine] = leftLines.splice(0, 1);
@@ -47,7 +48,7 @@ export const parseFile = () => {
 
     var leftRoles = Number(rolesCount);
 
-    const roles: [string, number][] = [];
+    const roles: SkillTupple[] = [];
 
     while (leftRoles > 0) {
       const [roleLine] = leftLines.splice(0, 1);

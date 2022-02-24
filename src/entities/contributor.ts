@@ -1,11 +1,11 @@
-export type Skill = Record<string, number>;
+import { SkillRecord, SkillTupple } from "./skill";
 
 export class Contributor {
   name: string;
-  skills: Record<string, number>;
+  skills: SkillRecord;
   currentProject: string | null = null;
 
-  constructor(name: string, skills: Skill) {
+  constructor(name: string, skills: SkillRecord) {
     this.name = name;
     this.skills = skills;
   }
@@ -20,5 +20,12 @@ export class Contributor {
 
   improveSkill(skillName: string) {
     this.skills[skillName]++;
+  }
+
+  canContribute() {}
+
+  canMentor(skill: SkillTupple) {
+    const [name, level] = skill;
+    return this.skills[name] >= level;
   }
 }
