@@ -22,7 +22,11 @@ export class Contributor {
     this.skills[skillName]++;
   }
 
-  canContribute() {}
+  canContribute(skill: SkillTupple) {
+    const [name, level] = skill;
+
+    return this.skills[name] >= level - 1;
+  }
 
   canMentor(skill: SkillTupple) {
     const [name, level] = skill;
