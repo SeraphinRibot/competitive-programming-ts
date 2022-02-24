@@ -1,76 +1,69 @@
+import { Console } from "console";
 
+interface Skill {
+  name: string,
+  level: number,
+}
 
 interface Project {
   name: string
-  skills: {
-    [index: string]: number
-  }
+  skills: Skill[]
 }
 
 interface Contributor {
   name: string,
   available: boolean,
-  skills: {
-    [index: string]: number
-  },
+  skills: Skill[],
 }
 
 const contributors: Contributor[] = [
   {
     name: 'Anna',
     available: true,
-    skills: {
-      'c++': 1,
-    },
+    skills: [{ name: 'c++', level: 1 }],
   },
   
   {
     name: 'Bob',
     available: true,
-    skills: {
-      'html': 5,
-      'css': 5,
-    },
+    skills: [
+      { name: 'html', level: 5 },
+      { name: 'css', level: 5 },
+    ],
   },
   
   {
     name: 'Maria',
     available: true,
-    skills: {
-      'python': 3,
-    }
+    skills: [{ name: 'python', level: 3 }]
   },
 ];
 
 const projects: Project[] = [
-    {
-        name: 'WebChat',
-        skills: {
-            'html': 3,
-            'python': 3
-        }
-    },
-    {
-        name: 'Logging',
-        skills: {
-            'c++': 3
-        }
-    },
-    {
-        name: 'WebServer',
-        skills: {
-            'c++': 2,
-            'html': 3
-        }
-    },
-  
-    
+  {
+    name: 'WebChat',
+    skills: [
+      { name: 'html', level: 3 },
+      { name: 'python', level: 3 },
+    ]
+  },
+  {
+    name: 'Logging',
+    skills: [{ name: 'c++', level: 3 }]
+  },
+  {
+    name: 'WebServer',
+    skills: [
+      { name: 'c++', level: 2 },
+      { name: 'html', level: 3 },
+    ]
+  },  
 ]
 // Sort projects by skill level
 function sortProjects(projects: Project[]) {
   return projects.sort((prevProject, nextProject) => {
-    const prevProjectLevel = Object.values(prevProject.skills).reduce((total, level) => total + level, 0);
-    const nextProjectLevel = Object.values(nextProject.skills).reduce((total, level) => total + level, 0);
+    const prevProjectLevel = prevProject.skills.reduce((total, skill) => total + skill.level, 0);
+    const nextProjectLevel = nextProject.skills.reduce((total, skill) => total + skill.level, 0);
     return prevProjectLevel - nextProjectLevel;
   });
 }
@@ -82,23 +75,31 @@ function findContributors(
 ) {
   const requiredSkills = project.skills;
 
-  const contributors = Object.keys(requiredSkills).map((skill) => {
-    const level = requiredSkills[skill];
-
+  const contributors = requiredSkills.map((skill) => {
     const bestContributors = availableContributors
       .filter(contributor => contributor.available)
-      .filter(contributor => contributor.skills[skill] >= level)
+      .filter(contributor => contributor.skills.findIndex((s) => s.name === skill.name) !== -1)
+      .filter(contributor => {
+        const selectedSkill = contributor.skills.find((s) => s.name === skill.name);
+        if (selectedSkill) {
+          return selectedSkill.level >= skill.level;
+        }
+        return false;
+      })
       .sort((prevContributors, nextContributors) => {
-        const prevContributorsLevel = prevContributors.skills[skill];
-        const nextContributorsLevel = nextContributors.skills[skill];
+        const prevContributorsLevel = prevContributors.skills.find((s) => s.name === skill.name)?.level || 0;
+        const nextContributorsLevel = nextContributors.skills.find((s) => s.name === skill.name)?.level || 0;
         return prevContributorsLevel - nextContributorsLevel;
       });
 
-    return bestContributors.length ? `${skill} ${level} ${bestContributors[0].name}` : 'Not found';
+    const contributor = bestContributors.length ? bestContributors[0] : null;
+    
+    return !!contributor ? { skill, contributor } : null;
   });
 
-  return contributors;
+  return contributors.filter(Boolean).length === requiredSkills.length ? contributors : null;
 }
 
+
 //sortProjects(projects);
-console.log(findContributors(projects[2], contributors));
+console.log(findContributors(projects[0], contributors));
