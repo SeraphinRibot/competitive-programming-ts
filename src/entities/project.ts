@@ -1,3 +1,4 @@
+import { Contributor } from "./contributor";
 import { SkillTupple } from "./skill";
 
 export class Project {
@@ -21,5 +22,13 @@ export class Project {
     this.score = score;
     this.bestBefore = bestBefore;
     this.skills = skills;
+  }
+
+  oneDaySpent() {
+    this.daysLeft--;
+  }
+
+  isFinished() {
+    return this.daysLeft >= 0;
   }
 }

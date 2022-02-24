@@ -1,21 +1,35 @@
+import { Project } from "./project";
 import { SkillRecord, SkillTupple } from "./skill";
 
 export class Contributor {
   name: string;
   skills: SkillRecord;
-  currentProject: string | null = null;
+  currentWork: { project: string; skill: string } | null = null;
 
   constructor(name: string, skills: SkillRecord) {
     this.name = name;
     this.skills = skills;
   }
 
-  setProject(project: string) {
-    this.currentProject = project;
+  setProject(project: string, skillName: string) {
+    this.currentWork = { project, skill: skillName };
   }
 
-  available() {
-    this.currentProject = null;
+  finishProject(project: Project) {
+    if (this.currentWork) {
+      const workedSkill = this.currentWork.skill;
+      const projectSkill = project.skills.find(
+        ([name]) => name === workedSkill
+      );
+
+      if (projectSkill) {
+        const canImproveSkill = this.skills[workedSkill] <= projectSkill[1];
+
+        if (canImproveSkill) this.improveSkill(workedSkill);
+      }
+
+      this.currentWork = null;
+    }
   }
 
   improveSkill(skillName: string) {

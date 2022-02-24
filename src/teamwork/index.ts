@@ -5,6 +5,7 @@
 
 import { Contributor } from "../entities/contributor";
 import { Project } from "../entities/project";
+import { SkillPlusContributor, SkillTupple } from "../entities/skill";
 
 // interface Project {
 //   name: string
@@ -21,7 +22,7 @@ import { Project } from "../entities/project";
 //     name: 'Anna',
 //     skills: [{ name: 'c++', level: 1 }],
 //   },
-  
+
 //   {
 //     name: 'Bob',
 //     skills: [
@@ -29,7 +30,7 @@ import { Project } from "../entities/project";
 //       { name: 'css', level: 5 },
 //     ],
 //   },
-  
+
 //   {
 //     name: 'Maria',
 //     skills: [{ name: 'python', level: 3 }]
@@ -54,28 +55,34 @@ import { Project } from "../entities/project";
 //       { name: 'c++', level: 2 },
 //       { name: 'html', level: 3 },
 //     ]
-//   },  
+//   },
 // ]
 // Sort projects by skill level
 export function sortProjects(projects: Project[]) {
   return projects.sort((prevProject, nextProject) => {
-    const prevProjectLevel = prevProject.skills.reduce((total, skill) => total + skill[1], 0);
-    const nextProjectLevel = nextProject.skills.reduce((total, skill) => total + skill[1], 0);
+    const prevProjectLevel = prevProject.skills.reduce(
+      (total, skill) => total + skill[1],
+      0
+    );
+    const nextProjectLevel = nextProject.skills.reduce(
+      (total, skill) => total + skill[1],
+      0
+    );
     return prevProjectLevel - nextProjectLevel;
   });
 }
 
 //Find contributor by project
-function findContributors(
+export function findContributors(
   project: Project,
-  availableContributors: Contributor[],
+  availableContributors: Contributor[]
 ) {
   const requiredSkills = project.skills;
 
   const contributors = requiredSkills.map((skill) => {
     const bestContributors = availableContributors
-      .filter(contributor => contributor.skills[skill[0]])
-      .filter(contributor => {
+      .filter((contributor) => contributor.skills[skill[0]])
+      .filter((contributor) => {
         const level = contributor.skills[skill[0]];
         if (level) {
           return level >= skill[1];
@@ -89,9 +96,11 @@ function findContributors(
       });
 
     const contributor = bestContributors.length ? bestContributors[0] : null;
-    
+
     return !!contributor ? { skill, contributor } : null;
   });
 
-  return contributors.filter(Boolean).length === requiredSkills.length ? contributors : null;
+  return contributors.filter(Boolean).length === requiredSkills.length
+    ? (contributors as SkillPlusContributor[])
+    : null;
 }
