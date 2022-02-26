@@ -1,4 +1,3 @@
-import { Contributor } from "./contributor";
 import { SkillTupple } from "./skill";
 
 export class Project {

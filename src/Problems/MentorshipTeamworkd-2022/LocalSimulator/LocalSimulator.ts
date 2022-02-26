@@ -9,7 +9,7 @@ export class LocalSimulator {
                 const project = line[0];
                 const project_obj = project_dates[project];
                 if (!!project_obj) {
-                    const { start_date, end_date, best_before, score } = project_obj;
+                    const { end_date, best_before, score } = project_obj;
                     if ((best_before - end_date) > 0) {
                         final_score += score
                     } else {

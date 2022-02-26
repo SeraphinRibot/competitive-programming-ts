@@ -25,7 +25,9 @@ export class Contributor {
       if (projectSkill) {
         const canImproveSkill = this.skills[workedSkill] <= projectSkill[1];
 
-        if (canImproveSkill) this.improveSkill(workedSkill);
+        if (canImproveSkill) {
+          this.improveSkill(workedSkill);
+        }
       }
 
       this.currentWork = null;
