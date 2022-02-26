@@ -91,7 +91,7 @@ export class ParseFile {
       return acc;
     }, {} as any);
     const result = `${finishedProjects.length}\n` + finishedProjects
-      .flatMap(project => [project.name, project.contributors?.join(' ')]
+      .flatMap(project => [project.name, project.contributors?.map(e=> e.contributor.name)?.join(' ')]
         .join('\n'))
       .join('\n')
     fs.writeFileSync(`./Parser/output/${this.filename}`, result.toString());

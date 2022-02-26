@@ -3,11 +3,12 @@ import { ParseFile } from "./Parser/parseFile";
 import { sortProjects, findContributors, getAvailableContributors } from "./Algo";
 import { LocalSimulator } from "./LocalSimulator/LocalSimulator";
 
-const fileParser = new ParseFile('b_better_start_small.in.txt');
+const fileParser = new ParseFile('e_exceptional_skills.in.txt');
 const localSimulator = new LocalSimulator();
 const finishedProjects: Project[] = [];
 var inProgressProjects: Project[] = [];
 const { projects, contributors } = fileParser.parseFile();
+const maxDates = Math.max(...projects.map(e=> e.bestBefore))
 
 let days = 0;
 let leftProjects = sortProjects(projects);
@@ -25,7 +26,7 @@ while (true) {
       projectContributors.forEach((c) => {
         c.contributor.setProject(project.name, c.skill[0]); // Contributors on a project TODO: add skill
       });
-      project.start(days, projectContributors.map(({ contributor }) => contributor.name));
+      project.start(days, projectContributors);
 
       inProgressProjects.push(project); // Add project to in progress projects
       leftProjects = leftProjects.filter((p) => project.name !== p.name); // Remove project from left projects
@@ -53,6 +54,8 @@ while (true) {
   });
 
   days++; // Advance day
-  fileParser.writeResults(finishedProjects);
-  console.log(finishedProjects.length);
+  if (days%20) {
+    fileParser.writeResults(finishedProjects);
+  }
+  console.log(finishedProjects.length, projects.length, days, maxDates);
 }

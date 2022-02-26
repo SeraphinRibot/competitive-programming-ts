@@ -1,4 +1,4 @@
-import { SkillTupple } from "./skill";
+import { SkillTupple, SkillPlusContributor } from "./skill";
 
 export class Project {
   name: string;
@@ -10,7 +10,7 @@ export class Project {
 
   start_date?: number;
   end_date?: number;
-  contributors?: string[];
+  contributors?: SkillPlusContributor[];
 
   constructor(
     name: string,
@@ -35,7 +35,7 @@ export class Project {
     return this.daysLeft == 0;
   }
 
-  start(date: number, contributors: string[]) {
+  start(date: number, contributors: SkillPlusContributor[]) {
     this.start_date = date;
     this.contributors = contributors;
   }

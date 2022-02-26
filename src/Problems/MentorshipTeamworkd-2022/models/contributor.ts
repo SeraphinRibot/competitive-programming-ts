@@ -18,9 +18,7 @@ export class Contributor {
   finishProject(project: Project) {
     if (this.currentWork) {
       const workedSkill = this.currentWork.skill;
-      const projectSkill = project.skills.find(
-        ([name]) => name === workedSkill
-      );
+      const projectSkill = project.contributors?.find(e => e.contributor.name === this.name)?.skill;
 
       if (projectSkill) {
         const canImproveSkill = this.skills[workedSkill] <= projectSkill[1];
