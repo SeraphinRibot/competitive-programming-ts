@@ -32,7 +32,7 @@ export class Project {
   }
 
   isFinished() {
-    return this.daysLeft >= 0;
+    return this.daysLeft == 0;
   }
 
   start(date: number, contributors: string[]) {
