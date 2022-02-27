@@ -1,10 +1,16 @@
 import { Contributor } from "./contributor";
 
-export type SkillRecord = Record<string, number>;
-
-export type SkillTupple = [string, number];
-
-export type SkillPlusContributor = {
-  skill: SkillTupple;
+export type ContributorProjectSkill = {
+  projectSkill: Skill;
+  contributorSkill: Skill;
   contributor: Contributor;
 };
+
+export class Skill {
+  public name: string;
+  public level: number;
+  constructor(name: string, level: number) {
+    this.name = name;
+    this.level = level;
+  }
+}

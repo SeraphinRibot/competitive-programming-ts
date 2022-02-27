@@ -1,6 +1,6 @@
-import { Project, SkillPlusContributor } from "./models";
+import { Project, ContributorProjectSkill, Contributor } from "./models";
 import { ParseFile } from "./Parser/parseFile";
-import { sortProjects, findContributors, getAvailableContributors } from "./Algo";
+import { sortProjects, findContributors } from "./Algo";
 import { LocalSimulator } from "./LocalSimulator/LocalSimulator";
 
 const fileParser = new ParseFile('e_exceptional_skills.in.txt');
@@ -12,6 +12,7 @@ const maxDates = Math.max(...projects.map(e=> e.bestBefore))
 
 let days = 0;
 let leftProjects = sortProjects(projects);
+const availableContributors: Contributor[] = contributors.slice();
 
 // A loop iteration simulate one day
 while (true) {
@@ -19,15 +20,13 @@ while (true) {
    * First we start project
    */
   leftProjects.forEach((project) => {
-    const projectContributors: SkillPlusContributor[] | null =
-      findContributors(project, getAvailableContributors(contributors));
-
+    const projectContributors: ContributorProjectSkill[] | null = findContributors(project, availableContributors);
     if (projectContributors) {
       projectContributors.forEach((c) => {
-        c.contributor.setProject(project.name, c.skill[0]); // Contributors on a project TODO: add skill
+        const index = availableContributors.findIndex(e=> e.name === c.contributor.name);
+        availableContributors.splice(index, 1);
       });
       project.start(days, projectContributors);
-
       inProgressProjects.push(project); // Add project to in progress projects
       leftProjects = leftProjects.filter((p) => project.name !== p.name); // Remove project from left projects
     }
@@ -40,14 +39,16 @@ while (true) {
     project.oneDaySpent();
 
     if (project.isFinished()) {
-      contributors
-        .filter((c) => c.currentWork?.project === project.name)
-        .forEach((c) => c.finishProject(project)); // Make contributor available again
-
+      project.contributors?.forEach(c => {
+        //TO DO: introduce mentoring skill improvement
+        if (c.contributorSkill.level === c.projectSkill.level) {
+          c.contributor.improveSkill(c.projectSkill);
+        }
+        availableContributors.push(c.contributor);
+      });
       inProgressProjects = inProgressProjects.filter(
         (p) => project.name !== p.name
       );
-
       project.finish(days);
       finishedProjects.push(project); // Add project to finished projects
     }

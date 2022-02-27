@@ -1,14 +1,14 @@
-import { Contributor, Project, SkillPlusContributor } from "../models";
+import { Contributor, Project, ContributorProjectSkill } from "../models";
 
 //sort Projects from low required skills to high required skills ASC
 export function sortProjects(projects: Project[]) {
   return projects.sort((prevProject, nextProject) => {
     const prevProjectLevel = prevProject.skills.reduce(
-      (total, skill) => total + skill[1],
+      (total, skill) => total + skill.level,
       0
     );
     const nextProjectLevel = nextProject.skills.reduce(
-      (total, skill) => total + skill[1],
+      (total, skill) => total + skill.level,
       0
     );
     return prevProjectLevel - nextProjectLevel;
@@ -21,29 +21,20 @@ export function findContributors(
   availableContributors: Contributor[]
 ) {
   const requiredSkills = project.skills;
-  let chosenContributors: SkillPlusContributor[] = [];
+  let chosenContributors: ContributorProjectSkill[] = [];
 
   for (let i = 0; i < requiredSkills.length; i++) {
-    const skill = requiredSkills[i];
+    const requiredSkill = requiredSkills[i];
     const bestContributors = availableContributors
-      .filter((contributor) => contributor.skills[skill[0]])
-      .filter((contributor) => {
-        const level = contributor.skills[skill[0]];
-        if (level) {
-          return level >= skill[1];
+      .reduce((acc: ContributorProjectSkill[], contributor) => {
+        const searchedSkill = contributor.skills.find(e => e.name === requiredSkill.name);
+        if (searchedSkill && searchedSkill.level >= requiredSkill.level && !chosenContributors.find(e => e.contributor.name === contributor.name)) {
+          acc.push({ contributor, projectSkill: requiredSkill, contributorSkill: searchedSkill });
         }
-        return false;
-      })
-      .filter(c => !chosenContributors.find(e => c.name == e.contributor.name))
-      .sort((prevContributors, nextContributors) => {
-        const prevContributorsLevel = prevContributors.skills[skill[0]] || 0;
-        const nextContributorsLevel = nextContributors.skills[skill[0]] || 0;
-        return prevContributorsLevel - nextContributorsLevel;
-      });
-    const contributor = bestContributors.length ? bestContributors[0] : null;
-    if (!!contributor) {
-      chosenContributors.push({ contributor, skill });
-    }
+        return acc;
+      }, [])
+      .sort((a, b) => a.contributorSkill.level - b.contributorSkill.level);
+    if (bestContributors[0]) chosenContributors.push(bestContributors[0]);
   }
   if (chosenContributors.length === requiredSkills.length) {
     return chosenContributors
@@ -52,7 +43,3 @@ export function findContributors(
     return null;
   }
 }
-
-export function getAvailableContributors(contributors: Contributor[]) {
-  return contributors.filter((c) => !c.currentWork);
-};

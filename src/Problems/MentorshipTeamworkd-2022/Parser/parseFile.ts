@@ -1,5 +1,5 @@
 import fs from "fs";
-import { Contributor, Project, SkillRecord, SkillTupple } from "../models";
+import { Contributor, Project, Skill } from "../models";
 
 export class ParseFile {
   filename: string;
@@ -27,13 +27,13 @@ export class ParseFile {
 
       var leftSkill = Number(skillsCount);
 
-      const skills: SkillRecord = {};
+      const skills: Skill[] = [];
 
       while (leftSkill > 0) {
         const [skillLine] = leftLines.splice(0, 1);
         const [skillName, skillLevel] = skillLine.split(" ");
 
-        skills[skillName] = Number(skillLevel);
+        skills.push(new Skill(skillName, +skillLevel));
         leftSkill--;
       }
 
@@ -52,13 +52,13 @@ export class ParseFile {
 
       var leftRoles = Number(rolesCount);
 
-      const roles: SkillTupple[] = [];
+      const roles: Skill[] = [];
 
       while (leftRoles > 0) {
         const [roleLine] = leftLines.splice(0, 1);
         const [skillName, skillLevel] = roleLine.split(" ");
 
-        roles.push([skillName, Number(skillLevel)]);
+        roles.push(new Skill(skillName, +skillLevel));
         leftRoles--;
       }
 

@@ -1,4 +1,4 @@
-import { SkillTupple, SkillPlusContributor } from "./skill";
+import { Skill, ContributorProjectSkill } from "./skill";
 
 export class Project {
   name: string;
@@ -6,18 +6,18 @@ export class Project {
   daysLeft: number; // Days before end of project
   score: number;
   bestBefore: number;
-  skills: SkillTupple[]; // tupple instead of record because we can have multiple times smae role
+  skills: Skill[]; // tupple instead of record because we can have multiple times smae role
 
   start_date?: number;
   end_date?: number;
-  contributors?: SkillPlusContributor[];
+  contributors?: ContributorProjectSkill[];
 
   constructor(
     name: string,
     duration: number,
     score: number,
     bestBefore: number,
-    skills: SkillTupple[]
+    skills: Skill[]
   ) {
     this.name = name;
     this.duration = duration;
@@ -35,7 +35,7 @@ export class Project {
     return this.daysLeft == 0;
   }
 
-  start(date: number, contributors: SkillPlusContributor[]) {
+  start(date: number, contributors: ContributorProjectSkill[]) {
     this.start_date = date;
     this.contributors = contributors;
   }
